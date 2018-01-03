@@ -20,7 +20,7 @@
     }
 
     #mainWrapper{
-      display: none;
+      
     }
 
     #chatWrapper{
@@ -33,7 +33,7 @@
 
     #userWrapper {
       float: left;
-      border: 1px #ccc solid;
+      border: 1px #ccc soli;
       border-radius: 10px;
       background: #f4f4f4;
       padding: 10px;
@@ -43,6 +43,7 @@
     }
 
     #namesWrapper {
+      display: none;
       float: left;
       border: 1px #ccc solid;
       border-radius: 10px;
@@ -53,6 +54,7 @@
 
     input{
       height: 30px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
@@ -69,7 +71,7 @@
 
     <div id="mainWrapper">
       <h2>ChatIO</h2>
-      <div id="charWrapper">
+      <div id="chatWrapper">
         <div id="chatWindow"></div>
         <form id="messageForm">
             <input type="text" size="35" id="message" placeholder="Say Something...">
@@ -83,5 +85,27 @@
     </div>
   </div>
   
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // using jquery to catch the chat msg sent by the user
+    $(function(){
+        var socket = io.connect();
+        var messageForm = $('#messageForm');
+        var message = $('#message');
+        var chat = $('#chatWindow');
+
+        messageForm.submit(function(e){
+          e.preventDefault();
+          socket.emit('send message', message.val()); //send msg to server
+          message.val(''); //clear chat input
+        });
+
+        //receive new msg from server
+        socket.on('new message', function(data){
+          chat.append(data.msg+'<br>'); //add to chat box
+        });
+    });
+  </script>
 </body>
 </html>
